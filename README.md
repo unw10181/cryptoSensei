@@ -75,7 +75,7 @@ The platform is designed to help aspiring investors understand market dynamics w
 
 ## Data Flow
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 Data Flow:
 
