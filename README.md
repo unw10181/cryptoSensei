@@ -37,93 +37,45 @@ The platform is designed to help aspiring investors understand market dynamics w
 
 ## Backend Tree Route
 
+```
 /api
+├── auth
+│   ├── POST   /register               # Create new user account
+│   ├── POST   /login                  # Authenticate user and return JWT
+│   └── POST   /logout                 # Invalidate session
 │
-├── /auth
-│ ├── POST /register # Create new user account
-│ ├── POST /login # Authenticate user & return JWT
-│ └── POST /logout # Invalidate session
+├── users
+│   ├── GET    /:id                    # Get user profile
+│   ├── PUT    /:id                    # Update user profile
+│   └── GET    /:id/achievements       # Get user's achievements
 │
-├── /users
-│ ├── GET /:id # Get user profile
-│ ├── PUT /:id # Update user profile
-│ └── GET /:id/achievements # Get user's unlocked achievements
+├── portfolios
+│   ├── GET    /                       # Get all user portfolios
+│   ├── POST   /                       # Create new portfolio
+│   ├── GET    /:id                    # Get portfolio details
+│   ├── PUT    /:id                    # Update portfolio
+│   ├── DELETE /:id                    # Delete portfolio
+│   └── GET    /:id/performance        # Get performance metrics
 │
-├── /portfolios
-│ ├── GET / # Get all portfolios for logged-in user
-│ ├── POST / # Create new portfolio
-│ ├── GET /:id # Get single portfolio details
-│ ├── PUT /:id # Update portfolio (rename, etc.)
-│ ├── DELETE /:id # Delete portfolio
-│ └── GET /:id/performance # Get portfolio performance metrics
+├── transactions
+│   ├── GET    /portfolio/:portfolioId # Get portfolio transactions
+│   ├── POST   /                       # Create buy/sell transaction
+│   ├── GET    /:id                    # Get transaction details
+│   └── DELETE /:id                    # Delete transaction
 │
-├── /transactions
-│ ├── GET /portfolio/:portfolioId # Get all transactions for a portfolio
-│ ├── POST / # Create new transaction (buy/sell)
-│ ├── GET /:id # Get single transaction details
-│ └── DELETE /:id # Delete transaction
+├── crypto
+│   ├── GET    /prices                 # Get multiple crypto prices
+│   ├── GET    /price/:symbol          # Get single crypto price
+│   └── GET    /search                 # Search cryptocurrencies
 │
-├── /crypto
-│ ├── GET /prices # Get current prices for multiple cryptos
-│ ├── GET /price/:symbol # Get current price for specific crypto
-│ └── GET /search # Search for cryptocurrencies
-│
-└── /achievements
-├── GET / # Get all available achievements
-└── POST /unlock # Check and unlock achievements for user
+└── achievements
+    ├── GET    /                       # Get all achievements
+    └── POST   /unlock                 # Unlock achievements
+```
 
 ## Data Flow
 
-+-------------------------+                        +-------------------------+ 
-|                         |                        | ACHIEVEMENT             | 
-|       USER              |                        |                         | 
-+-------------------------+                        +-------------------------+ 
-|  ID: Object ID          |                        | id: ObjectId (PK)       | 
-|  username: string       +-----------+            | name: String            | 
-|  email: string          |           |            | description: String     | 
-|  password: string       |           |            | animeCharacter: String  | 
-|  virtualBalance         |           |            | imageUrl: String        | 
-|                         |           |            | requirement: String     | 
-+-----------+-------------+           |            | tier: String            | 
-            |                         |            +-----------+-------------+ 
-            |                         |                        |               
-            |                         |                        |               
-            |                         |            +-----------v-------------+ 
- +----------v--------------+          |            |  USER_ACHIEVEMENT       | 
- |                         |          |            |                         | 
- |     PORTFOLIO           |          |            +-------------------------+ 
- +-------------------------+          |            |_id: ObjectId (PK)       | 
- |  id: objectID           |          |            | userId: ObjectId (FK)   | 
- |  userId: ObjectID       |          |            |achievementId: ObjectId(FK)
- |  name: string           +----------+            | unlockedAt: Date        | 
- |  created: Date          +----------+            |                         | 
- |  currentValue: number   |          |            |                         | 
- |  cashBalance: number    |          |            +-------------------------+ 
- +-----------+-------------+          |                                        
-             |                        |                                        
-             |                        |                                        
-             |                        |                                        
-             |                        |                                        
-  +----------v--------------+         |                                        
-  |                         |         |                                        
-  |    Transaction          |         |                                        
-  +-------------------------+         |                                        
-  |                         |         |                                        
-  |  id: ObjectId (PK)      +---------+                                        
-  |  portfolioId: ObjectId(FK)                                                 
-  |  cryptoSymbol: String (e.g."BTC")                                          
-  |  cryptoName: String (e.g., "Bitcoin")                                      
-  |  type: String ("buy" / "sell")                                             
-  |  quantity: Number       |                                                  
-  |  pricePerCoin: Number   |                                                  
-  |  totalValue: Number     |                                                  
-  |  timestamp: Date        |                                                  
-  |                         |                                                  
-  |                         |                                                  
-  |                         |                                                  
-  |                         |                                                  
-  |                         |                                                  
-  +-------------------------+                                                  
+![alt text](image.png)
 
 Data Flow:
 
