@@ -1,79 +1,24 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { STORAGE_KEYS, THEMES } from "../utils/constants";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext(null);
 
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
-};
-
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("dark"); // Default to dark theme for gaming aesthetic
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("cs_theme") || "dark",
+  );
 
   useEffect(() => {
-    // Load saved theme from localStorage
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
+    localStorage.setItem("cs_theme", theme);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
-    if (savedTheme) {
-      setTheme(savedTheme);
-      applyTheme(savedTheme);
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
-      ).matches;
-      const defaultTheme = prefersDark ? "dark" : "light";
-      setTheme(defaultTheme);
-      applyTheme(defaultTheme);
-    }
-  }, []);
+  const toggle = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
-  const applyTheme = (newTheme) => {
-    const root = document.documentElement;
-
-    if (newTheme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    applyTheme(newTheme);
-    localStorage.setItem(STORAGE_KEYS.THEME, newTheme);
-  };
-
-  const setLightTheme = () => {
-    setTheme("light");
-    applyTheme("light");
-    localStorage.setItem(STORAGE_KEYS.THEME, "light");
-  };
-
-  const setDarkTheme = () => {
-    setTheme("dark");
-    applyTheme("dark");
-    localStorage.setItem(STORAGE_KEYS.THEME, "dark");
-  };
-
-  const value = {
-    theme,
-    isDark: theme === "dark",
-    isLight: theme === "light",
-    toggleTheme,
-    setLightTheme,
-    setDarkTheme,
-    themeConfig: THEMES[theme],
-  };
+  const value = useMemo(() => ({ theme, toggle, setTheme }), [theme]);
 
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
-};
+}
 
-export default ThemeContext;
+export const useTheme = () => useContext(ThemeContext);

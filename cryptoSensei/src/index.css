@@ -2,216 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom scrollbar for gaming aesthetic */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+/* Temporary gamer fonts (Google) — replace later with dafont via @font-face */
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap");
+
+/* ✅ When you pick a dafont font:
+   1) put .ttf in /public/fonts/
+   2) uncomment and set file name
+
+@font-face {
+  font-family: "ArcadeCustom";
+  src: url("/fonts/YOUR_DAFONT.ttf") format("truetype");
+  font-display: swap;
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-dark-bg dark:bg-dark-surface;
+Then in tailwind.config.js set fontFamily.gaming to ["ArcadeCustom", "system-ui"]
+*/
+
+html, body {
+  height: 100%;
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-primary-600 rounded-full;
-  background: linear-gradient(180deg, #00F0FF 0%, #C471FF 100%);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-700;
-}
-
-/* Global gaming styles */
 body {
-  @apply font-tech antialiased;
-  @apply bg-light-bg dark:bg-dark-bg;
-  @apply text-gray-900 dark:text-gray-100;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Custom glow effect for headings */
-h1, h2, h3 {
-  @apply font-gaming;
-}
-
-/* Neon text effect */
-.neon-text {
-  text-shadow: 
-    0 0 7px #00F0FF,
-    0 0 10px #00F0FF,
-    0 0 21px #00F0FF,
-    0 0 42px #00F0FF;
-}
-
-.neon-text-purple {
-  text-shadow: 
-    0 0 7px #C471FF,
-    0 0 10px #C471FF,
-    0 0 21px #C471FF,
-    0 0 42px #C471FF;
-}
-
-/* Gaming card styles */
-.gaming-card {
-  @apply bg-light-surface dark:bg-dark-surface;
-  @apply border border-light-border dark:border-dark-border;
-  @apply rounded-xl shadow-gaming;
-  @apply transition-all duration-300;
-  backdrop-filter: blur(10px);
-}
-
-.gaming-card:hover {
-  @apply transform -translate-y-1;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-}
-
-/* Gaming button styles */
-.btn-gaming {
-  @apply px-6 py-3 rounded-lg font-gaming font-bold;
-  @apply bg-gradient-to-r from-primary-600 to-primary-700;
-  @apply text-white uppercase tracking-wider;
-  @apply transition-all duration-300;
-  @apply hover:shadow-neon hover:scale-105;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-gaming::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s;
-}
-
-.btn-gaming:hover::before {
-  left: 100%;
-}
-
-/* Rank badge styles */
-.rank-badge {
-  @apply inline-flex items-center justify-center;
-  @apply px-4 py-2 rounded-full;
-  @apply font-gaming text-sm font-bold uppercase;
-  @apply border-2;
-  animation: float 3s ease-in-out infinite;
-}
-
-/* Loading animation */
-.loading-spinner {
-  border: 3px solid rgba(0, 240, 255, 0.1);
-  border-top: 3px solid #00F0FF;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Particle background effect */
-.particles-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(196, 113, 255, 0.05) 0%, transparent 50%);
-}
-
-/* Glass morphism effect */
-.glass-morphism {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Dark mode glass morphism */
-.dark .glass-morphism {
-  background: rgba(10, 14, 39, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Achievement unlock animation */
-@keyframes achievement-unlock {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.2) rotate(10deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-.achievement-unlock {
-  animation: achievement-unlock 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-/* XP bar animation */
-.xp-bar-fill {
-  transition: width 1s ease-out;
-  background: linear-gradient(90deg, #FFE600, #00FF85, #00F0FF);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-}
-
-/* Stat counter animation */
-@keyframes counter-increment {
-  0% {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.stat-counter {
-  animation: counter-increment 0.5s ease-out;
-}
-
-/* Mobile responsive adjustments */
-@media (max-width: 640px) {
-  .font-gaming {
-    font-size: 0.875rem;
-  }
-  
-  .btn-gaming {
-    @apply px-4 py-2 text-sm;
-  }
-}
-
-/* Selection styling */
-::selection {
-  @apply bg-neon-cyan text-dark-bg;
-}
-
-::-moz-selection {
-  @apply bg-neon-cyan text-dark-bg;
-}
-
-/* Focus styles for accessibility */
-*:focus-visible {
-  @apply outline-none ring-2 ring-neon-cyan ring-offset-2 ring-offset-dark-bg;
-}
-
-/* Smooth transitions for theme switching */
-* {
-  transition-property: background-color, border-color, color;
-  transition-duration: 200ms;
-  transition-timing-function: ease-in-out;
+  font-family: Rajdhani, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
