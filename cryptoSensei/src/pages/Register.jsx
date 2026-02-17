@@ -21,4 +21,16 @@ const Register = () => {
      });
      const [errors, setErrors] = useState({});
      const [apiError, setApiError] = useState("");   
+
+     const handleChange = (e) => {
+       const { name, value } = e.target;
+       setFormData((prev) => ({
+         ...prev,
+         [name]: value,
+       }));
+       // Clear error when user starts typing
+       if (errors[name]) {
+         setErrors((prev) => ({ ...prev, [name]: "" }));
+       }
+     };
 }
