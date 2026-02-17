@@ -30,7 +30,7 @@ export default function MobileNav() {
             "px-2 py-2",
           ].join(" ")}
         >
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-5 gap-2 font-dirty">
             <NavLink to="/dashboard" className={tabClass}>
               <Icon>⌁</Icon>
               <span>DASH</span>
