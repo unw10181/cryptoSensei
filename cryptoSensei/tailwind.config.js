@@ -38,10 +38,8 @@ export default {
         xl2: "1.25rem",
       },
       fontFamily: {
-        // Will use your dafont font once you drop it in /public/fonts
         arcade: ["ArcadeCustom", "system-ui", "sans-serif"],
-        tech: ["ui-sans-serif", "system-ui", "sans-serif"],
-        body: ["ui-sans-serif", "system-ui", "sans-serif"],
+        dirty: ["Dirty Brush", "cursive"],
       },
       backgroundImage: {
         "gradient-neon":

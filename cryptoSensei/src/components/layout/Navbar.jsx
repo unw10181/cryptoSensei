@@ -19,9 +19,9 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
         <button
           onClick={() => nav("/dashboard")}
-          className="font-arcade text-xs tracking-widest"
+          className="font-dirty text-sm tracking-widest"
         >
-          Crypto<span className="text-primary-500">Sensei</span>
+          Crypto<span className="font-dirty text-primary-500">Sensei</span>
         </button>
 
         <nav className="hidden md:flex items-center gap-2">
@@ -29,13 +29,13 @@ export default function Navbar() {
             DASH
           </NavLink>
           <NavLink to="/portfolios" className={link}>
-            PORTS
+            PORTFOLIOS
           </NavLink>
           <NavLink to="/market" className={link}>
             MARKET
           </NavLink>
           <NavLink to="/achievements" className={link}>
-            ACHV
+            ACHVIEVEMENTS
           </NavLink>
           <NavLink to="/profile" className={link}>
             PROFILE

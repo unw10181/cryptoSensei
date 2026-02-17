@@ -18,9 +18,9 @@ export const endpoints = {
     create: "/portfolios",
   },
   transactions: {
-    byPortfolio: (portfolioId) => `/transactions/portfolio/${portfolioId}`,
     create: "/transactions",
     one: (id) => `/transactions/${id}`,
+    byPortfolio: (portfolioId) => `/transactions/portfolio/${portfolioId}`,
     userAll: "/transactions/user/all",
   },
   crypto: {

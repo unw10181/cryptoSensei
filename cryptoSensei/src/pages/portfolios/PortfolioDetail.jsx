@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Card from "../../components/ui/Card";
@@ -19,7 +19,14 @@ import { endpoints } from "../../api/endpoints";
 import { useAsync } from "../../hooks/useAsync";
 import { fmtMoney } from "../../utils/format";
 
+const symbolToCoinId = {
+  BTC: "bitcoin",
+  ETH: "ethereum",
+  SOL: "solana",
+};
+
 export default function PortfolioDetail() {
+  // ✅ HOOKS (always called, top-level)
   const { id } = useParams();
 
   const perfReq = useAsync(async () => {
@@ -32,84 +39,127 @@ export default function PortfolioDetail() {
     return res.data?.data || [];
   }, [id]);
 
-  // live pricing for holdings using batch-prices
-  const liveReq = useAsync(async () => {
-    const perf = await (async () => {
-      const res = await api.get(endpoints.portfolios.performance(id));
-      return res.data?.data;
-    })();
-    const holdings = perf?.holdings || [];
-    // We need CoinGecko IDs, but holdings store symbol. For demo efficiency,
-    // map common symbols to IDs; you can expand this mapping.
-    const map = { BTC: "bitcoin", ETH: "ethereum", SOL: "solana" };
-    const coinIds = holdings.map((h) => map[h.cryptoSymbol]).filter(Boolean);
-    if (coinIds.length === 0) return { map, prices: {} };
+  const [live, setLive] = useState({});
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState("");
 
-    const res = await api.post(endpoints.crypto.batch, { coinIds });
-    return { map, prices: res.data?.data || {} };
-  }, [id]);
-
-  if (perfReq.loading || txReq.loading || liveReq.loading)
-    return <Loading label="LOADING PORTFOLIO..." />;
-  if (perfReq.error)
-    return <ErrorState message={perfReq.error} onRetry={perfReq.run} />;
-  if (txReq.error)
-    return <ErrorState message={txReq.error} onRetry={txReq.run} />;
-  if (liveReq.error)
-    return <ErrorState message={liveReq.error} onRetry={liveReq.run} />;
-
-  const perf = perfReq.data;
+  // ✅ Derived state (safe defaults)
+  const perf = perfReq.data || null;
   const txs = txReq.data || [];
   const holdings = perf?.holdings || [];
 
-  const live = liveReq.data?.prices || {};
-  const map = liveReq.data?.map || {};
+  // ✅ Stable dependency key (prevents effect spam + avoids hook-order issues)
+  const holdingsKey = useMemo(
+    () =>
+      holdings
+        .map((h) => h.cryptoSymbol)
+        .sort()
+        .join(","),
+    [holdings],
+  );
 
+  // ✅ Effect to load live prices (NOT a hook depending on another hook)
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
+      setLiveError("");
+      setLiveLoading(true);
+      try {
+        const coinIds = holdings
+          .map((h) => symbolToCoinId[h.cryptoSymbol])
+          .filter(Boolean);
+
+        if (coinIds.length === 0) {
+          if (!cancelled) setLive({});
+          return;
+        }
+
+        const res = await api.post(endpoints.crypto.batch, { coinIds });
+        if (!cancelled) setLive(res.data?.data || {});
+      } catch (e) {
+        if (!cancelled) {
+          setLiveError(
+            e?.response?.data?.message ||
+              e?.message ||
+              "Failed to load live prices",
+          );
+        }
+      } finally {
+        if (!cancelled) setLiveLoading(false);
+      }
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+    // ✅ depends on id + holdingsKey only
+  }, [id, holdingsKey]); // <-- IMPORTANT
+
+  // ✅ useMemo (always called)
   const allocation = useMemo(() => {
     const labels = [];
     const values = [];
+
     for (const h of holdings) {
-      const id = map[h.cryptoSymbol];
-      const price = id ? live?.[id]?.usd : 0;
-      const val = (Number(h.quantity) || 0) * (Number(price) || 0);
+      const coinId = symbolToCoinId[h.cryptoSymbol];
+      const price = coinId ? Number(live?.[coinId]?.usd || 0) : 0;
+      const qty = Number(h.quantity || 0);
       labels.push(h.cryptoSymbol);
-      values.push(Number(val.toFixed(2)));
+      values.push(Number((qty * price).toFixed(2)));
     }
+
     return { labels, values };
-  }, [holdings, live, map]);
+  }, [holdings, live]);
 
   const tradeTimeline = useMemo(() => {
-    // simple line chart of transaction totalValue over time
-    const sorted = [...txs].reverse();
-    const labels = sorted.map((t) =>
-      new Date(t.createdAt).toLocaleDateString(),
-    );
-    const data = sorted.map((t) => Number(t.totalValue));
-    return { labels, data };
+    const sorted = [...txs].slice().reverse();
+    return {
+      labels: sorted.map((t) => new Date(t.createdAt).toLocaleDateString()),
+      data: sorted.map((t) => Number(t.totalValue) || 0),
+    };
   }, [txs]);
+
+  // ✅ No early returns BEFORE hooks (we already called hooks)
+  const isLoading = perfReq.loading || txReq.loading || liveLoading;
+  const errorMsg = perfReq.error || txReq.error || liveError;
+
+  const refresh = async () => {
+    await perfReq.run();
+    await txReq.run();
+    // live prices auto-refresh from holdingsKey changes
+  };
 
   const onTrade = async (payload) => {
     await api.post(endpoints.transactions.create, payload);
-    await Promise.all([perfReq.run(), txReq.run(), liveReq.run()]);
+    await refresh();
   };
 
   const onDeleteTx = async (txId) => {
     await api.delete(endpoints.transactions.one(txId));
-    await Promise.all([perfReq.run(), txReq.run(), liveReq.run()]);
+    await refresh();
   };
+
+  // ✅ Render
+  if (isLoading) return <Loading label="LOADING PORTFOLIO..." />;
+  if (errorMsg) return <ErrorState message={errorMsg} onRetry={refresh} />;
+  if (!perf)
+    return <EmptyState title="NOT FOUND" message="Portfolio not found." />;
 
   return (
     <div className="space-y-6">
       <Card className="p-6" data-aos="fade-up">
         <div className="font-arcade text-xs tracking-widest text-primary-500">
-          {perf?.portfolioName}
+          {perf.portfolioName || "PORTFOLIO"}
         </div>
+
         <div className="mt-4 flex flex-wrap gap-3">
-          <StatPill label="Cash" value={fmtMoney(perf?.cashBalance)} />
-          <StatPill label="Invested" value={fmtMoney(perf?.totalInvested)} />
-          <StatPill label="Trades" value={String(perf?.totalTrades ?? 0)} />
-          <StatPill label="Bought" value={fmtMoney(perf?.totalBought ?? 0)} />
-          <StatPill label="Sold" value={fmtMoney(perf?.totalSold ?? 0)} />
+          <StatPill label="Cash" value={fmtMoney(perf.cashBalance)} />
+          <StatPill label="Invested" value={fmtMoney(perf.totalInvested)} />
+          <StatPill label="Trades" value={String(perf.totalTrades ?? 0)} />
+          <StatPill label="Bought" value={fmtMoney(perf.totalBought ?? 0)} />
+          <StatPill label="Sold" value={fmtMoney(perf.totalSold ?? 0)} />
         </div>
       </Card>
 
@@ -163,8 +213,8 @@ export default function PortfolioDetail() {
             <EmptyState title="EMPTY" message="No holdings yet." />
           ) : (
             holdings.map((h) => {
-              const coinId = map[h.cryptoSymbol];
-              const price = coinId ? live?.[coinId]?.usd : 0;
+              const coinId = symbolToCoinId[h.cryptoSymbol];
+              const price = coinId ? Number(live?.[coinId]?.usd || 0) : 0;
               return (
                 <HoldingRow key={h.cryptoSymbol} h={h} livePrice={price} />
               );

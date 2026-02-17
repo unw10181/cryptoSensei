@@ -8,6 +8,7 @@ import "aos/dist/aos.css";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./styles/globals.css";
+import ErrorBoundary from "./components/ui/ErrorBoundary.jsx";
 
 function Boot() {
   useEffect(() => {
@@ -22,7 +23,9 @@ function Boot() {
 
   return (
     <>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
       <Toaster position="top-right" />
     </>
   );
