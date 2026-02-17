@@ -4,8 +4,8 @@
 
 /* Drop a dafont font in /public/fonts/ArcadeCustom.ttf */
 @font-face {
-  font-family: "Heroes Legend";
-  src: url("/fonts/Heroes-Legend.ttf") format("truetype");
+  font-family: "Dirty Brush";
+  src: url("/public/fonts/DirtyBrush.ttf") format("truetype");
   font-display: swap;
 }
 
