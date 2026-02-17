@@ -25,3 +25,5 @@ import {
 import { formatCurrency, formatRelativeTime } from "../utils/formatters";
 
 const Dashboard = () => { }
+
+export default Dashboard;
