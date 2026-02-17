@@ -1,0 +1,32 @@
+/* Subtle neon “CRT haze” */
+:root {
+  --scanline: rgba(255, 255, 255, 0.02);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(0, 240, 255, 0.18),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(196, 113, 255, 0.14),
+      transparent 38%
+    ),
+    radial-gradient(circle at 50% 80%, rgba(255, 0, 229, 0.1), transparent 40%),
+    repeating-linear-gradient(
+      to bottom,
+      var(--scanline) 0px,
+      var(--scanline) 1px,
+      transparent 2px,
+      transparent 5px
+    );
+  opacity: 0.7;
+  mix-blend-mode: screen;
+}

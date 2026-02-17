@@ -7,11 +7,12 @@ import "aos/dist/aos.css";
 
 import { Toaster } from "react-hot-toast";
 import "./index.css";
+import "./styles/globals.css";
 
 function Boot() {
   useEffect(() => {
     AOS.init({
-      duration: 800,
+      duration: 750,
       easing: "ease-in-out",
       offset: 80,
       once: false,

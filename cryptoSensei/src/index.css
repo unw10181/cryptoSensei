@@ -2,26 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Temporary gamer fonts (Google) — replace later with dafont via @font-face */
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap");
-
-/* ✅ When you pick a dafont font:
-   1) put .ttf in /public/fonts/
-   2) uncomment and set file name
-
+/* Drop a dafont font in /public/fonts/ArcadeCustom.ttf */
 @font-face {
-  font-family: "ArcadeCustom";
-  src: url("/fonts/YOUR_DAFONT.ttf") format("truetype");
+  font-family: "Heroes Legend";
+  src: url("/fonts/Heroes-Legend.ttf") format("truetype");
   font-display: swap;
 }
 
-Then in tailwind.config.js set fontFamily.gaming to ["ArcadeCustom", "system-ui"]
-*/
-
-html, body {
-  height: 100%;
-}
-
+html,
 body {
-  font-family: Rajdhani, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  height: 100%;
 }

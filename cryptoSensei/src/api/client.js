@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_BASE || "/api";
+
 export const api = axios.create({
-  baseURL: "/api", // Vite proxy -> backend
+  baseURL,
+  timeout: 20000,
 });
 
 api.interceptors.request.use((config) => {
