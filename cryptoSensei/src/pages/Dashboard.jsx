@@ -24,3 +24,4 @@ import {
 } from "../components/charts/PortfolioCharts";
 import { formatCurrency, formatRelativeTime } from "../utils/formatters";
 
+const Dashboard = () => { }
