@@ -64,4 +64,11 @@ const Register = () => {
        setErrors(newErrors);
        return Object.keys(newErrors).length === 0;
      };
+
+     const handleNextStep = (e) => {
+       e.preventDefault();
+       if (validateForm()) {
+         setStep(2);
+       }
+     };
 }
