@@ -24,6 +24,21 @@ import {
 } from "../components/charts/PortfolioCharts";
 import { formatCurrency, formatRelativeTime } from "../utils/formatters";
 
-const Dashboard = () => { }
+const Dashboard = () => { 
+    const { user } = useAuth();
+    const { isDark } = useTheme();
+    const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(true);
+    const [portfolios, setPortfolios] = useState([]);
+    const [transactions, setTransactions] = useState([]);
+    const [achievements, setAchievements] = useState([]);
+    const [stats, setStats] = useState({
+      totalValue: 0,
+      totalProfit: 0,
+      profitPercentage: 0,
+      portfolioCount: 0,
+    });
+};
 
 export default Dashboard;
