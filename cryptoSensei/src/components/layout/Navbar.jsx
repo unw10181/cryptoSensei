@@ -18,3 +18,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import Button from "../common/Button";
 import RankBadge from "../common/RankBadge";
+
+const Navbar = () => { 
+
+    
+};
