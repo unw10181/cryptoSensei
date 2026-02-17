@@ -33,4 +33,35 @@ const Register = () => {
          setErrors((prev) => ({ ...prev, [name]: "" }));
        }
      };
+
+     const validateForm = () => {
+       const newErrors = {};
+
+       if (!formData.username.trim()) {
+         newErrors.username = "Username is required";
+       } else if (formData.username.length < 4) {
+         newErrors.username = "Username must be at least 4 characters";
+       } else if (formData.username.length > 15) {
+         newErrors.username = "Username must not exceed 15 characters";
+       }
+
+       if (!formData.email.trim()) {
+         newErrors.email = "Email is required";
+       } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+         newErrors.email = "Email is invalid";
+       }
+
+       if (!formData.password) {
+         newErrors.password = "Password is required";
+       } else if (formData.password.length < 6) {
+         newErrors.password = "Password must be at least 6 characters";
+       }
+
+       if (formData.password !== formData.confirmPassword) {
+         newErrors.confirmPassword = "Passwords do not match";
+       }
+
+       setErrors(newErrors);
+       return Object.keys(newErrors).length === 0;
+     };
 }
