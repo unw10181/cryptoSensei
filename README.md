@@ -91,9 +91,9 @@ Real-time crypto prices fetched from CoinGecko API (not stored in DB)
 
 https://uchenna-williams-cryptosensei.atlassian.net/jira/core/projects/CRYP/board?filter=&groupBy=status&atlOrigin=eyJpIjoiNWYwYjgyODhiOTY4NGJhYmExZWJjNjUwMTAxNjk2NzciLCJwIjoiaiJ9
 
-## Future Features
+### Future Features
 
-    - AI-powered trading recommendations
+    -   AI-powered trading recommendations
     -	Social trading and leaderboards
     -	Advanced risk analysis
     -	Cloud deployment (AWS/GCP)
@@ -103,4 +103,5 @@ https://uchenna-williams-cryptosensei.atlassian.net/jira/core/projects/CRYP/boar
 ## Author
 
 Uchenna Williams
-Per Scholas MERN
+Per Scholas MERN Scholar
+FinTech Enthusiast 
