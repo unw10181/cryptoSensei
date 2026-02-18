@@ -45,9 +45,51 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggle}
-            className="px-3 py-2 rounded-xl text-xs border border-light-border dark:border-dark-border hover:shadow-neon transition"
+            className="px-3 py-2 rounded-xl text-xs border border-light-border dark:border-dark-border hover:shadow-neon transition inline-flex items-center gap-2"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           >
-            {theme === "dark" ? "LIGHT" : "DARK"}
+            {theme === "dark" ? (
+              // Sun icon (when currently dark, next is light)
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="h-4 w-4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="M4.93 4.93l1.41 1.41" />
+                <path d="M17.66 17.66l1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="M4.93 19.07l1.41-1.41" />
+                <path d="M17.66 6.34l1.41-1.41" />
+              </svg>
+            ) : (
+              // Moon icon (when currently light, next is dark)
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="h-4 w-4"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 12.8A8.5 8.5 0 0 1 11.2 3a6.5 6.5 0 1 0 9.8 9.8Z" />
+              </svg>
+            )}
+
+            <span>{theme === "dark" ? "LIGHT" : "DARK"}</span>
           </button>
 
           {user ? (

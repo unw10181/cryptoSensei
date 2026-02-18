@@ -5,7 +5,7 @@
 /* Drop a dafont font in /public/fonts/ArcadeCustom.ttf */
 @font-face {
   font-family: "Dirty Brush";
-  src: url("/public/fonts/DirtyBrush.ttf") format("truetype");
+  src: url("/fonts/DirtyBrush.ttf") format("truetype");
   font-display: swap;
 }
 
